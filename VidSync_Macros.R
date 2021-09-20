@@ -17,7 +17,7 @@ library(purrr)
 ```
 
 ```{r}    
-Vidsync_Data <- read.csv(file = "Porter_BACI_GolfBall_30June2018_Part3.csv",
+Vidsync_Data <- read.csv(file = "VidSync_Raw-csv/after/impact/Porter_BACI_HalfTire_5July2018_Part3.csv",
                          skip = 2, 
                          col.names = c("objects", "event", "timecode", "time", "X", "Y", "Z", "pld_error", "projection_error", "nearest_camera_distance", "screen_coordinates"),
                          colClasses = c("character", "character", "character", "double", "double", "double", "double", "double", "double", "double", "double")) %>% 
@@ -26,6 +26,7 @@ Vidsync_Data <- read.csv(file = "Porter_BACI_GolfBall_30June2018_Part3.csv",
   mutate(site = "18.8")
 Vidsync_Data
 ```
+head(Vidsync_Data)
 
 #Import VidSync Data into proper format
 ```{r}
@@ -42,6 +43,7 @@ VidsyncFormat <- function(dataframe){
 } #We would run the function "VidsyncFormat(Vidsync_Data)" to create a clean dataset to work with for the rest of the functions
 
 test <- VidsyncFormat(Vidsync_Data)
+head(test)
 ```
 #Volume Macro
 ```{r}
@@ -72,7 +74,7 @@ volTest <- ExtractVolume(test)
 #Swimming Speed Macro
 ```{r}
 DistancePerTime <- function(dataframe){
-  swimming_speed <- dataframe %>% 
+    dataframe %>% 
     filter(!behavior == "Length") %>%
     filter(!behavior == "Surface_Strike") %>% 
     filter(!behavior == "") %>% 
@@ -97,7 +99,7 @@ test2
 #Behavior Type Macro
 ```{r}
 BehaviorTypes <- function(dataframe) {
-  behaviors <- dataframe %>% 
+    dataframe %>% 
     select(subsample, index, behavior) %>% 
     filter(!behavior == "Length") %>%
     filter(!behavior == "Point") %>% 
@@ -106,11 +108,11 @@ BehaviorTypes <- function(dataframe) {
     mutate(search_forage = if_else(behavior == "Search_Forage", 1, 0)) %>% 
     mutate(movement = if_else(behavior == "Movement", 1, 0)) %>% 
     mutate(surface_strike = if_else(behavior == "Surface_Strike", 1, 0)) %>% 
-    mutate(attack = if_else(behavior == "Attack", 1, 0)) %>% 
-    mutate(nip = if_else(behavior == "Nip", 1, 0))
+    mutate(attack = if_else(behavior == c("Attack","Nip"), 1, 0)) #%>% 
+    #mutate(nip = if_else(behavior == "Nip", 1, 0))
 }
 test4 <- BehaviorTypes(VidsyncFormat(Vidsync_Data))
-test4
+head(test4)
 ```
 
 #Length Macro
@@ -178,8 +180,6 @@ GetNND <- function(dataframe){
 }
 
 GetNND(test)
-
-lapply(test, GetNND)
 
 test %>% 
   dplyr::filter(!behavior == "Length") %>% 
