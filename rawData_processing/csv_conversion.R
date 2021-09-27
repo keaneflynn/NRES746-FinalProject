@@ -217,7 +217,7 @@ GetNND <- function(dataframe=MasterFormat){ #Needs fix for multiple sample event
 
 NND1 <- GetNND(VidsyncFormat(Vidsync_Data1))
 NND2 <- GetNND(VidsyncFormat(Vidsync_Data2))
-NND3 <- GetNND(VidsyncFormat(Vidsync_Data3))
+#NND3 <- GetNND(VidsyncFormat(Vidsync_Data3))
 NND4 <- GetNND(VidsyncFormat(Vidsync_Data4))
 NND5 <- GetNND(VidsyncFormat(Vidsync_Data5))
 NND6 <- GetNND(VidsyncFormat(Vidsync_Data6))
@@ -247,6 +247,7 @@ df_Final <- left_join(df_Final3, MasterVolume, by = c("sample_event" = "sample_e
                                                       "site" = "site", 
                                                       "subsample" = "subsample",
                                                       "index" = "index")) %>% 
-  select(sample_event, site, subsample, index, time, length_mm, behavior, distance_cm_per_sec, DistPerTime_Mean, DistPerTime_Median, NND_cm, volume, drift_forage, search_forage, benthic_forage, movement, surface_strike, attack)
+  select(sample_event, site, subsample, index, time, length_mm, behavior, distance_cm_per_sec, DistPerTime_Mean, DistPerTime_Median, NND_cm, volume, drift_forage, search_forage, benthic_forage, movement, surface_strike, attack) %>% 
+  arrange(desc(sample_event), site, subsample, index, time)
 filename <- file.path("Downloads/R-Program/NRES_746/NRES746-FinalProject/rawData_processing/", "finalDataFrame.csv")
 write.csv(x = df_Final, file = filename)
