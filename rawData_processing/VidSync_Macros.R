@@ -1,8 +1,3 @@
-```{r setup, include=FALSE, message=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r}
 library(dplyr)
 library(readr)
 library(tidyverse)
@@ -14,9 +9,7 @@ library(zoo)
 library(magrittr)
 library(data.table)
 library(purrr)
-```
-
-```{r}    
+   
 Vidsync_Data <- read.csv(file = "VidSync_Raw-csv/after/impact/Porter_BACI_HalfTire_5July2018_Part3.csv",
                          skip = 2, 
                          col.names = c("objects", "event", "timecode", "time", "X", "Y", "Z", "pld_error", "projection_error", "nearest_camera_distance", "screen_coordinates"),
@@ -25,11 +18,10 @@ Vidsync_Data <- read.csv(file = "VidSync_Raw-csv/after/impact/Porter_BACI_HalfTi
   mutate(sample_event = "After") %>% #These are the columns to be added to each video prior to analysis
   mutate(site = "18.8")
 Vidsync_Data
-```
+
 head(Vidsync_Data)
 
-#Import VidSync Data into proper format
-```{r}
+
 VidsyncFormat <- function(dataframe){
   dataframe <- dataframe %>% 
     mutate(species = str_extract(objects, "Omykiss|Okisutch")) %>% 
@@ -44,9 +36,7 @@ VidsyncFormat <- function(dataframe){
 
 test <- VidsyncFormat(Vidsync_Data)
 head(test)
-```
-#Volume Macro
-```{r}
+
 ExtractVolume <- function(dataframe){
   dataframe %>% 
   filter(!behavior == "Length") %>%
@@ -69,10 +59,7 @@ ExtractVolume <- function(dataframe){
   arrange(site, desc(sample_event), subsample, index)
 }
 volTest <- ExtractVolume(test)
-```
 
-#Swimming Speed Macro
-```{r}
 DistancePerTime <- function(dataframe){
     dataframe %>% 
     filter(!behavior == "Length") %>%
@@ -94,10 +81,7 @@ DistancePerTime <- function(dataframe){
 }
 test2 <- DistancePerTime(test)
 test2
-```  
 
-#Behavior Type Macro
-```{r}
 BehaviorTypes <- function(dataframe) {
     dataframe %>% 
     select(subsample, index, behavior) %>% 
@@ -113,10 +97,7 @@ BehaviorTypes <- function(dataframe) {
 }
 test4 <- BehaviorTypes(VidsyncFormat(Vidsync_Data))
 head(test4)
-```
 
-#Length Macro
-```{r}
 GetLength <- function(dataframe){
   length <- dataframe %>% 
     filter(behavior == "Length") %>% 
@@ -134,9 +115,7 @@ GetLength <- function(dataframe){
 
 test3 <- GetLength(VidsyncFormat(Vidsync_Data))
 test3
-```
-#Modified NND
-```{r}
+
 GetNND1 <- function(dataframe){
 for (i in 1:63) {
     dataframe %>% 
@@ -200,4 +179,4 @@ test %>%
   left_join(test, by = "time") %>% 
   arrange(site, desc(sample_event), subsample, index, time) %>% 
   select(site, sample_event, subsample, index, time, NND_cm)
-```
+
