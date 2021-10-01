@@ -1,0 +1,11 @@
+#likelihood
+model{
+  for (i in 1:nobs){
+    logit(prob[i]) <- int + slope*bl[i] 
+    y[i] ~ dbern(prob[i])
+  }
+#priors
+int <- log(baseP/(1 - baseP))
+slope ~ dnorm(0, 0.0001)
+baseP ~ dbeta(1,1)
+}
